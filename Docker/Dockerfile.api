@@ -1,0 +1,13 @@
+# build environment
+FROM node:alpine3.10 as builder
+WORKDIR /app/api
+COPY api/package.json api/package-lock.json ./
+RUN npm install
+
+# production environment
+FROM node:alpine3.10
+WORKDIR /app
+COPY api .
+COPY --from=builder /app/api .
+CMD ["node", "./bin/www"]
+

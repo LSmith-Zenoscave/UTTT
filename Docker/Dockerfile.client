@@ -1,0 +1,13 @@
+# build environment
+FROM node:alpine3.10 as builder
+WORKDIR /app/client
+COPY client/package.json client/package-lock.json ./
+RUN npm install
+
+COPY client/ .
+RUN npm run build
+
+# production environment
+FROM nginx:alpine
+COPY --from=builder /app/client/build /usr/share/nginx/html/
+CMD ["nginx", "-g", "daemon off;"]
